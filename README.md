@@ -27,5 +27,5 @@ the changes (enable multisite).
 
 ## Creators
 
-William Roboly
-Jamon Camisso
+* William Roboly
+* Jamon Camisso
