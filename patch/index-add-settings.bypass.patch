@@ -1,0 +1,80 @@
+diff --git a/includes/bootstrap-add-settings-bypass.patch b/includes/bootstrap-add-settings-bypass.patch
+index 0aa3f25..1d4b8bf 100644
+--- a/includes/bootstrap-add-settings-bypass.patch
++++ b/includes/bootstrap-add-settings-bypass.patch
+@@ -1,8 +1,8 @@
+ diff --git a/includes/bootstrap.inc b/includes/bootstrap.inc
+-index 2c60363..09bdd38 100644
++index 2c60363..d06e44b 100644
+ --- a/includes/bootstrap.inc
+ +++ b/includes/bootstrap.inc
+-@@ -576,17 +576,21 @@ function conf_path($require_settings = TRUE, $reset = FALSE) {
++@@ -576,17 +576,19 @@ function conf_path($require_settings = TRUE, $reset = FALSE) {
+      include(DRUPAL_ROOT . '/' . $confdir . '/sites.php');
+    }
+  
+@@ -17,9 +17,7 @@ index 2c60363..09bdd38 100644
+ -      if (file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir . '/settings.php') || (!$require_settings && file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir))) {
+ -        $conf = "$confdir/$dir";
+ -        return $conf;
+-+  if ($bypass_settings_search) {
+-+    // do nothing
+-+  } else {
+++  if (!DRUPAL_BYPASS_SETTINGS_SEARCH) {
+ +    $uri = explode('/', $_SERVER['SCRIPT_NAME'] ? $_SERVER['SCRIPT_NAME'] : $_SERVER['SCRIPT_FILENAME']);
+ +    $server = explode('.', implode('.', array_reverse(explode(':', rtrim($_SERVER['HTTP_HOST'], '.')))));
+ +    for ($i = count($uri) - 1; $i > 0; $i--) {
+diff --git a/includes/bootstrap.inc b/includes/bootstrap.inc
+index 2c60363..d06e44b 100644
+--- a/includes/bootstrap.inc
++++ b/includes/bootstrap.inc
+@@ -576,17 +576,19 @@ function conf_path($require_settings = TRUE, $reset = FALSE) {
+     include(DRUPAL_ROOT . '/' . $confdir . '/sites.php');
+   }
+ 
+-  $uri = explode('/', $_SERVER['SCRIPT_NAME'] ? $_SERVER['SCRIPT_NAME'] : $_SERVER['SCRIPT_FILENAME']);
+-  $server = explode('.', implode('.', array_reverse(explode(':', rtrim($_SERVER['HTTP_HOST'], '.')))));
+-  for ($i = count($uri) - 1; $i > 0; $i--) {
+-    for ($j = count($server); $j > 0; $j--) {
+-      $dir = implode('.', array_slice($server, -$j)) . implode('.', array_slice($uri, 0, $i));
+-      if (isset($sites[$dir]) && file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $sites[$dir])) {
+-        $dir = $sites[$dir];
+-      }
+-      if (file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir . '/settings.php') || (!$require_settings && file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir))) {
+-        $conf = "$confdir/$dir";
+-        return $conf;
++  if (!DRUPAL_BYPASS_SETTINGS_SEARCH) {
++    $uri = explode('/', $_SERVER['SCRIPT_NAME'] ? $_SERVER['SCRIPT_NAME'] : $_SERVER['SCRIPT_FILENAME']);
++    $server = explode('.', implode('.', array_reverse(explode(':', rtrim($_SERVER['HTTP_HOST'], '.')))));
++    for ($i = count($uri) - 1; $i > 0; $i--) {
++      for ($j = count($server); $j > 0; $j--) {
++        $dir = implode('.', array_slice($server, -$j)) . implode('.', array_slice($uri, 0, $i));
++        if (isset($sites[$dir]) && file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $sites[$dir])) {
++          $dir = $sites[$dir];
++        }
++        if (file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir . '/settings.php') || (!$require_settings && file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir))) {
++          $conf = "$confdir/$dir";
++          return $conf;
++        }
+       }
+     }
+   }
+diff --git a/index.php b/index.php
+index 8b83199..e5cf113 100644
+--- a/index.php
++++ b/index.php
+@@ -12,6 +12,14 @@
+  */
+ 
+ /**
++ * We found that the system is actually loosing cycles trying to find the default
++ * folder where the settings.php file is stored when bootstrapping a new PHP/Drupal
++ * session. This variable along with a patch to the bootstrap.inc on function conf_path()
++ * significantly diminishes the reads on the multisite folder structure.
++ */
++define('DRUPAL_BYPASS_SETTINGS_SEARCH', TRUE);
++
++/**
+  * Root directory of Drupal installation.
+  */
+ define('DRUPAL_ROOT', getcwd());
