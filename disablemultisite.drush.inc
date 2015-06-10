@@ -30,7 +30,7 @@
  *
  * See `drush topic docs-commands` for a list of recognized keys.
  */
-function disable_multisite_drush_command() {
+function disablemultisite_drush_command() {
   $items = array();
 
   // The 'disable-multisite' command.
@@ -96,7 +96,7 @@ function disable_multisite_drush_command() {
  * This hook is also used to look up help metadata, such as help
  * category title and summary.  See the comments below for a description.
  */
-function disable_multisite_drush_help($section) {
+function disablemultisite_drush_help($section) {
   switch ($section) {
     case 'drush:disable-multisite':
       return dt("This command will toggle the state of the disable multisite function.");
@@ -113,7 +113,7 @@ function disable_multisite_drush_help($section) {
  * OR returning FALSE is sufficient.  See drush.api.php
  * for more details.
  */
-function drush_disable_multisite_disable_multisite_validate() {
+function drush_disablemultisite_disable_multisite_validate() {
   if (drush_is_windows()) {
     // $name = drush_get_username();
     // @todo Implement check for elevated process using w32api
@@ -155,7 +155,7 @@ function drush_disable_multisite_disable_multisite_validate() {
  * @see drush_invoke()
  * @see drush.api.php
  */
-function drush_disable_multisite_disable_multisite($toggle = 'true') {
+function drush_disablemultisite_disable_multisite($toggle = 'true') {
   /*
   $msg = dt('Okay. Enjoy this !filling sandwich!str_spreads.',
             array('!filling' => $filling, '!str_spreads' => $str_spreads)
@@ -183,7 +183,7 @@ function drush_disable_multisite_disable_multisite($toggle = 'true') {
  * and used as a command return value that can be output by different
  * output formatters.
  */
-function drush_disable_multisite_disable_multisite_status() {
+function drush_disablemultisite_disable_multisite_status() {
   return array(
     'ketchup' => array(
       'name' => 'Ketchup',
