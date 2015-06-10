@@ -1,4 +1,4 @@
-Drush Disable Mulsite Plug-in
+Drush Disable Multisite Plug-in
 =============================
 
 This is a plugin for drush which provides a disable/enable toggle for multisite 
